@@ -1,41 +1,31 @@
+
 import style from './List.module.css';
 import { VegyItem } from './VegyItem';
 
+const data = [
+    { title: 'Bulvės', price: 1, unit: 'kg.', href: 'bulves' },
+    { title: 'Morkos', price: 0.3, unit: 'kg.', href: 'morkos' },
+    { title: 'Svogūnai', price: 0.4, unit: 'kg.', href: 'svogunai' },
+    { title: 'Kopūstas', price: 0.7, unit: 'vnt.', href: 'kopustas' },
+    { title: 'Pomidoras', price: 2.5, unit: 'kg.', href: 'pomidoras' },
+    { title: 'Agurkas', price: 1.7, unit: 'vnt.', href: 'agurkas' },
+];
+
 export function List() {
-    const data = ['Bulves', 'Morkos', 'Svogunai', 'Kopustas', 'Pomidoras', 'Agurkas'];
-    const data2 = [
-        {
-            name: 'Bulves',
-            kaina: 10,
-        }, 
-        {
-            name: 'Morkos',
-            kaina: 20,
-        }, 
-        {
-            name: 'Svogunai',
-            kaina: 30, 
-        }, 
-        {
-            name: 'Kopustas', 
-            kaina: 40,
-        }, 
-        { 
-            name :'Pomidoras',
-            kaina: 50,
-        },
-        {
-            name: 'Agurkas',
-            kaina: 60,
-        }
-    ];
-
-
     return (
         <ul className={style.vegetables}>
-            {/* {data.map((vegy, index) => <li key={index} className={style.vegy}>{vegy}</li>)} */}
-            {data2.map((vegy, index) => <VegyItem key={index} title={vegy.name} kaina={vegy.kaina}/>)}
-            
+            {data.map((vegy, index) => <VegyItem key={index} data={vegy} />)}
         </ul>
     );
+}
+
+export function Data(x) {
+    for(const key of data){
+        if(key.href === x){
+return { title: key.title, 
+         price: key.price, 
+         unit: key.unit 
+        }
+        }
+    }
 }

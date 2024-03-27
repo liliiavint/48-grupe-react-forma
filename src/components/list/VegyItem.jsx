@@ -1,8 +1,10 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
 import style from './List.module.css';
+import { Link } from 'react-router-dom';
 
-export function VegyItem({ title, kaina}) {
+export function VegyItem({ data }) {
+    const { title, price, unit, href } = data;
     const minVegetablesAmount = 0;
     const maxVegetablesAmount = 10;
     const [count, setCount] = useState(1);
@@ -18,26 +20,19 @@ export function VegyItem({ title, kaina}) {
             setCount(count + 1);
         }
     }
-    function calculateTotal() {
-        return count * kaina;
-    }
-
-
+     
+    // function  total (){
+    //      count * price
+    // };   
     return (
         <li className={style.vegy}>
-            <span className={style.vegyTitle}>{title}</span>
+            <a className={style.vegyTitle} ><Link to={'/vegetables/' + href}>{title}</Link> ({price}&euro;/{unit})</a>
             <div className={style.controls}>
                 <button onClick={handleCountMinus} className={style.btn}>-</button>
-                <span className={style.count}>{count}</span>
+                <span className={style.count}>{count} {unit}</span>
                 <button onClick={handleCountPlus} className={style.btn}>+</button>
             </div>
-            <div className={style.allKaina}>
-                <span className={style.kaina}>{kaina}</span>
-            </div>
-            <div className={style.alltotal}>
-                <span className={style.total}>{calculateTotal()}</span>
-            </div>
-            
+            {/* <Link to={'/vegetables/' + href}>{title}</Link> */}
         </li>
     );
 }
