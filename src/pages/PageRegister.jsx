@@ -1,10 +1,9 @@
-import { RegisterForm } from "../components/form/RegisterForm";
+import { RegisterForm2 } from "../components/form/RegisterForm2";
 
 export function PageRegister() {
     return (
         <>
-            <h1>Register</h1>
-            <RegisterForm />
+            <RegisterForm2 />
         </>
     )
 }
