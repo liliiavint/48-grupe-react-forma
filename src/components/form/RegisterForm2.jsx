@@ -4,16 +4,23 @@ import { BiError } from "react-icons/bi";
 import style from './Form2.module.css';
 import { Link } from 'react-router-dom';
 
+import { useNavigate } from 'react-router-dom';
+
 export function RegisterForm2() {
     const href = "/"
     const [username, setUsername] = useState('');
-    const [usernameErr, setUsernameErr] = useState('');
-    const [emailErr, setEmailErr] = useState('');
-
-
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState('');
+    
+    const [usernameErr, setUsernameErr] = useState('');
+    const [emailErr, setEmailErr] = useState('');
+    const [passwordErr, setPasswordErr] = useState('');
+    const [repeatPasswordErr, setRepeatPasswordErr] = useState('');
+
+   
+
+    const navigate = useNavigate();
 
     function handleUsernameChange(e) {
         setUsername(e.target.value);
@@ -30,16 +37,22 @@ export function RegisterForm2() {
     function handleRepeatPasswordChange(e) {
         setRepeatPassword(e.target.value);
     }
+    function CapsLock(username) {
+        return username === username.toUpperCase();
+    }
 
     function isValidUsername(username) {
         if (!username.trim()) {
-            return 'Username is required'
+            return 'Username is required.'
         }
         if (username.length > 25) {
             return 'The text is too long, please write shorter!';
         }
         if(typeof username === 'number'){
-            return 'Username cannot contain numbers'
+            return 'Username cannot contain numbers.'
+        }
+        if(CapsLock(username)){
+            return 'Username cannot contain uppercase letter.'
         }
         
         const symbol = [',', ':', '*', '&', '^', '%', '$', '#', '@', '!'];
@@ -51,18 +64,17 @@ export function RegisterForm2() {
     }
 
     function isValidEmail(email) {
-      
         if (!email.trim()) {
-                return "Enter a valid email address "         
-              
-            }
-        
-        if (email.length < 6 || email.length > 50) {
-            return "The email is too long, or shorter!"
+            return "Enter a valid email address "         
+        }
+        if (email.length < 6) {
+            return "The email is too shorter."
+        }
+        if (email.length > 30) {
+            return "The email is too long."
         }
         if (!email.includes('@')) {
             return "The email must contain @!"
-             
         }
        
         const atCount = email.split('@').length - 1;
@@ -70,27 +82,48 @@ export function RegisterForm2() {
             return "Email cannot contain more than two @ symbols."
         }
         if (email.indexOf('.') === -1) {
-            return "The email must contain a character" 
+            return "The email must contain a character dot." 
+        }
+        return true;
+    }
+
+
+    function isValidPassword(password) {
+        if (!password.trim()) {
+            return "Enter a valid password."         
+        }
+        if (password.length < 8) {
+            return "The passwords must be at least 8 characters."
+        }
+        if (password.length > 30) {
+            return "The passwords is too long."
+        }
+        
+        return true;
+    }
+
+    function isValidRepeatPassword(repeatPassword) {
+        if (password !== repeatPassword) {
+           return 'The passwords do not match!';
+        }
+        return true;
+    }
+
   
-        }
-        return true;
-    }
 
 
-    function isValidPassword(text) {
-        if (text.length < 1) {
-            return false;
-        }
+    
 
-        return true;
-    }
-
+    
     function handleFormSubmit(e) {
         e.preventDefault();
 
         const usernameErrorValue = isValidUsername(username);
         const emailErrorValue = isValidEmail(email);
-        
+        const passwordErrorValue = isValidPassword(password);
+        const repeatPasswordErrorValue = isValidRepeatPassword(repeatPassword);
+    
+
         let isAllFormValid = true;
 
         if (usernameErrorValue !== true) {
@@ -107,46 +140,50 @@ export function RegisterForm2() {
             setEmailErr('');
         }
 
-        if (!isValidPassword(password)) {
+        if (passwordErrorValue !== true) {
             isAllFormValid = false;
-            return 'The incorrect password!';
+            setPasswordErr(passwordErrorValue);
+        } else {
+            setPasswordErr('');
         }
 
-        if (password !== repeatPassword) {
+        if (repeatPasswordErrorValue !== true) {
             isAllFormValid = false;
-            return 'The passwords do not match!';
+            setRepeatPasswordErr(repeatPasswordErrorValue);
+        } else {
+            setRepeatPasswordErr('');
         }
 
         if (isAllFormValid) {
-            console.log('viskas gerai, siuncia info i serveri');
-        }
+            
+            navigate('/');
+        } 
     }
-
+ 
+        
+    
+        
     return (
         <div className={style.main}>
             <div className={style.logo}>
-                <img src="../src/assets/images/imdb_logo.png" alt="Logo" />
+                <img src="../src/assets/images/logo/imdb_logo.png" alt="Logo" />
             </div>
-            {/* ERROR*/}
+        {(emailErr || usernameErr || passwordErr || repeatPasswordErr) ? 
             <div className={style.error}>
-                    <div>
-                        <i className={style.red}><BiError size="2rem" /> </i>
-                    </div>
-                    <div>
-                        <h4 className={style.redTittle}>There was a problem</h4>
-                        <ul>
-                           
-                            {emailErr.length === 0 ? null : <li className={style.errorLi}>{emailErr}</li>}
-                            {usernameErr.length === 0 ? null : <li className={style.errorLi}>{usernameErr}</li>}
-                        {/* 
-                        <li>Enter your password</li>
-                        <li>Passwords must match</li>
-                        <li>Passwords must be at least 8 characters.</li>
-                        <li></li>  */}
-                        </ul>
-                    </div>
-            </div>    
-               
+                <div>
+                    <i className={style.red}><BiError size="2rem" /> </i>
+                </div>
+                <div>
+                    <h4 className={style.redTittle}>There was a problem</h4>
+                    <ul>
+                        {emailErr.length === 0 ? null : <li className={style.errorLi}>{emailErr}</li>}
+                        {usernameErr.length === 0 ? null : <li className={style.errorLi}>{usernameErr}</li>}
+                        {passwordErr.length === 0 ? null : <li className={style.errorLi}>{passwordErr}</li>}
+                        {repeatPasswordErr.length === 0 ? null : <li className={style.errorLi}>{repeatPasswordErr}</li>}
+                    </ul>
+                </div>
+            </div>
+         : null }           
 {/* 
             Important Message!
 You indicated you're a new customer, 
@@ -164,14 +201,12 @@ email address vintiukviktoria@gmail.com. */}
                     <div className={style.formRow}>
                         <label className={style.label} htmlFor="">Your name</label>
                         <input value={username} onChange={handleUsernameChange} className={style.input} type="text" placeholder="First and last name" />
-                        
-                        {/* {usernameErr && <p className={style.error}>{usernameErr}</p>} */}
+                     
                     </div>
                     <div className={style.formRow}>
                         <label className={style.label} htmlFor="">Email</label>
                         <input value={email} onChange={handleEmailChange} className={style.input} type="email" placeholder="" />
                         
-                        {/* <p className={style.error}>Error...</p> */}
                     </div>
                     <div className={style.formRow}>
                         <label className={style.label} htmlFor="">Password</label>
@@ -180,12 +215,12 @@ email address vintiukviktoria@gmail.com. */}
                             <i className={style.blue}><TiInfoLarge size="1.5rem" /> </i>
                             <p>Passwords must be at least 8 characters.</p>
                         </div>
-                        {/* <p className={style.error}>Error...</p> */}
+                      
                     </div>
                     <div className={style.formRow}>
                         <label className={style.label} htmlFor="">Re-enter password</label>
                         <input value={repeatPassword} onChange={handleRepeatPasswordChange} className={style.input} type="password" placeholder=" " />
-                        {/* <p className={style.error}>Error...</p> */}
+                    
                     </div>
                     <div className={style.formRow}>
                         <button className={`${style.button} ${style.textButton}`}  type="submit">Create your IMDb account</button>
@@ -195,6 +230,6 @@ email address vintiukviktoria@gmail.com. */}
                     </div>
                 </form>
             </div>
-        </div>
+    </div>   
     );                                                 
 }
